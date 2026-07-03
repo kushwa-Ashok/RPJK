@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plural Patrol: Universe Edition</title>
+    <style>
+        :root {
+            --bg-color: #EEF2F6;
+            --card-color: #FFFFFF;
+            --text-color: #1E293B;
+            --primary-color: #6366F1;
+            --primary-hover: #4F46E5;
+            --success-color: #22C55E;
+            --error-color: #EF4444;
+            --timer-color: #F59E0B;
+            --accent-color: #EC4899;
+            --font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 520px;
+            background: var(--card-color);
+            border-radius: 36px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border: 6px solid #FFFFFF;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        .screen { display: none; flex-direction: column; align-items: center; }
+        .screen.active { display: flex; }
+
+        /* Typography & Custom Elements */
+        h1 { font-size: 2.4rem; color: var(--primary-color); text-shadow: 2px 2px 0px #DDD6FE; margin-bottom: 10px; }
+        h2 { font-size: 1.6rem; color: var(--text-color); margin-bottom: 15px; }
+        p { font-size: 1.1rem; margin-bottom: 20px; color: #475569; }
+
+        /* Fat Finger Accessible Buttons */
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            padding: 18px 36px;
+            cursor: pointer;
+            box-shadow: 0 6px 0px #4F46E5;
+            margin: 12px;
+            position: relative;
+            transition: all 0.1s ease;
+        }
+        .btn::after {
+            content: ''; position: absolute;
+            top: -15px; bottom: -15px; left: -15px; right: -15px;
+        }
+        .btn:active { transform: translateY(4px); box-shadow: 0 2px 0px #4F46E5; }
+
+        /* HUD & Timer Layout */
+        .hud {
+            display: flex; justify-content: space-between; width: 100%;
+            margin-bottom: 15px; font-weight: bold; background: #F1F5F9;
+            padding: 12px 18px; border-radius: 20px; font-size: 1rem;
+        }
+        .badge-pill { background: var(--primary-color); color: white; padding: 3px 10px; border-radius: 12px; }
+        
+        .timer-container { width: 100%; height: 14px; background: #E2E8F0; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+        .timer-bar { width: 100%; height: 100%; background: var(--timer-color); transition: width 0.1s linear; }
+
+        /* --- MODULE 1: TRUE/FALSE VIEW LAYOUT --- */
+        .question-box {
+            background: #F8FAFC; border: 4px dashed #CBD5E1; border-radius: 24px;
+            padding: 25px 15px; width: 100%; min-height: 120px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: bold; margin-bottom: 20px;
+        }
+        .choices-container { display: flex; width: 100%; gap: 15px; }
+        .btn-choice { flex: 1; font-size: 1.4rem; padding: 20px 10px; }
+        .btn-true { background-color: var(--success-color); box-shadow: 0 6px 0px #16A34A; }
+        .btn-true:active { box-shadow: 0 2px 0px #16A34A; }
+        .btn-false { background-color: var(--error-color); box-shadow: 0 6px 0px #DC2626; }
+        .btn-false:active { box-shadow: 0 2px 0px #DC2626; }
+
+        /* --- MODULE 2: DRAG & DROP VIEW LAYOUT --- */
+        .drag-container { width: 100%; margin-bottom: 25px; }
+        .word-target-zone {
+            background: #F8FAFC; border: 4px dashed #6366F1; border-radius: 24px;
+            padding: 30px 15px; font-size: 2rem; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 25px;
+        }
+        .drop-basket {
+            background: #E2E8F0; border-radius: 16px; padding: 5px 20px;
+            min-width: 100px; min-height: 50px; display: inline-flex;
+            justify-content: center; align-items: center; border-bottom: 4px solid #CBD5E1;
+            color: var(--primary-color);
+        }
+        .drop-basket.hovered { background: #E0F2FE; border-color: var(--primary-color); }
+        
+        .options-bank { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; }
+        .draggable-token {
+            background: white; border: 3px solid #6366F1; border-radius: 18px;
+            padding: 12px 24px; font-size: 1.3rem; font-weight: bold; cursor: grab;
+            box-shadow: 0 5px 0 #4F46E5; position: relative;
+        }
+        /* Tap-to-select support indicator for dynamic mobile touch */
+        .draggable-token.selected { background: #DDBEFE; transform: scale(1.05); }
+
+        /* --- BADGE REWARD LAYOUT --- */
+        .badges-grid { display: flex; justify-content: center; gap: 15px; margin: 15px 0; width: 100%; }
+        .badge-card {
+            background: #F8FAFC; border: 3px solid #E2E8F0; border-radius: 20px;
+            padding: 10px; flex: 1; opacity: 0.25; transform: scale(0.9);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .badge-card.unlocked { opacity: 1; transform: scale(1); border-color: var(--accent-color); background: #FFF1F2; }
+        .badge-icon { font-size: 2.2rem; margin-bottom: 5px; }
+        .badge-title { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: #64748B; }
+        .badge-card.unlocked .badge-title { color: var(--accent-color); }
+
+        /* Feedback Screen Animations */
+        @keyframes correctPop {
+            0% { transform: scale(1); background: white; }
+            50% { transform: scale(1.04); background: #DCFCE7; border-color: var(--success-color); }
+            100% { transform: scale(1); background: white; }
+        }
+        @keyframes errorShake {
+            0%, 100% { transform: translateX(0); background: white; }
+            20%, 60% { transform: translateX(-8px); background: #FEE2E2; border-color: var(--error-color); }
+            40%, 80% { transform: translateX(8px); background: #FEE2E2; }
+        }
+        .correct-anim { animation: correctPop 0.4s ease; }
+        .error-anim { animation: errorShake 0.4s ease; }
+
+        .exit-btn {
+            position: absolute; top: 12px; right: 12px; background: #E2E8F0;
+            border: none; width: 36px; height: 36px; border-radius: 50%;
+            font-weight: bold; cursor: pointer; display: none; align-items: center; justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="mainWrapper">
+        <button class="exit-btn" id="exitButton" onclick="openExitModal()">✕</button>
+
+        <!-- MODULE SCREEN 1: LANDING & DASHBOARD -->
+        <div id="scr-landing" class="screen active">
+            <div style="font-size: 4.5rem; margin-bottom: 10px;">🛡️</div>
+            <h1>Plural Patrol</h1>
+            <p>Complete training routes to collect your Hero Badges!</p>
+            
+            <h3 style="margin-top: 10px; color: #64748B; font-size: 0.9rem;">YOUR BADGES</h3>
+            <div class="badges-grid" id="dashboard-badges">
+                <!-- Badges will render programmatically here -->
+            </div>
+
+            <button class="btn" onclick="launchGameEngine()">START MISSION</button>
+        </div>
+
+        <!-- MODULE SCREEN 2: DYNAMIC GAMEPLAY HUB -->
+        <div id="scr-gameplay" class="screen">
+            <div class="hud">
+                <div>Route: <span id="hud-level" class="badge-pill">1</span></div>
+                <div id="hud-mode" style="color: var(--accent-color);">True / False</div>
+                <div>Points: <span id="hud-score">0</span></div>
+            </div>
+            
+            <div class="timer-container">
+                <div id="timerTrack" class="timer-bar"></div>
+            </div>
+
+            <p id="hint-banner" style="font-size: 0.95rem; font-weight: bold; color: #64748B; margin-bottom: 15px;"></p>
+
+            <!-- Container for True/False Engine Context -->
+            <div id="layout-tf" style="width: 100%;">
+                <div class="question-box" id="tf-question-text">...</div>
+                <div class="choices-container">
+                    <button class="btn btn-choice btn-true" onclick="evaluateInput(true)">TRUE</button>
+                    <button class="btn btn-choice btn-false" onclick="evaluateInput(false)">FALSE</button>
+                </div>
+            </div>
+
+            <!-- Container for Drag & Drop Engine Context -->
+            <div id="layout-dd" style="width: 100%; display: none;">
+                <div class="drag-container">
+                    <div class="word-target-zone">
+                        <span id="dd-stem-word">Base</span> ➔ 
+                        <div class="drop-basket" id="dropTarget" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)" onclick="handleBasketTap()">?</div>
+                    </div>
+                    <div class="options-bank" id="dragBank">
+                        <!-- Tokens injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE SCREEN 3: MISSION OVER SUMMARY -->
+        <div id="scr-summary" class="screen">
+            <h1 id="over-title">Route Finished!</h1>
+            <p id="over-reason" style="font-weight: bold; color: var(--error-color);"></p>
+            
+            <div style="background: #F1F5F9; width: 100%; padding: 20px; border-radius: 24px; margin-bottom: 20px;">
+                <p style="margin-bottom: 5px; font-size: 1rem;">Score Achieved</p>
+                <div style="font-size: 3rem; font-weight: bold; color: var(--primary-color);" id="summary-score">0</div>
+            </div>
+
+            <h3>Badges Status</h3>
+            <div class="badges-grid" id="summary-badges"></div>
+
+            <button class="btn" onclick="returnToDashboard()">DASHBOARD</button>
+        </div>
+    </div>
+
+    <script>
+        
+    </script>
+    
+    <script src="plural.min.js"></script>
+</body>
+</html>

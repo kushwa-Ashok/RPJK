@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Time Explorer: Clock Master</title>
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --dark: #2F3E46;
+            --light: #F7FFF7;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #6C5CE7, #a29bfe);
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            max-height: 800px;
+            background: var(--light);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 10;
+            transition: opacity 0.5s ease;
+            background: var(--light);
+        }
+
+        .hidden {
+            display: none !important;
+            opacity: 0;
+        }
+
+        #loading-screen {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            z-index: 100;
+        }
+
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #hud {
+            width: 100%;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f0f0f0;
+            border-bottom: 4px solid #e0e0e0;
+        }
+
+        .hud-item {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--dark);
+            background: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            border: 2px solid #ddd;
+        }
+
+        #game-screen {
+            justify-content: space-between;
+            padding-top: 0;
+        }
+
+        #question-area {
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        #target-time-text {
+            font-size: 2rem;
+            color: var(--primary);
+            background: #fff3f3;
+            padding: 8px 25px;
+            border-radius: 20px;
+            border: 3px dashed var(--primary);
+            display: inline-block;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        #instruction-tip {
+            font-size: 0.95rem;
+            color: #555;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        #clock-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: auto;
+        }
+
+        canvas {
+            cursor: pointer;
+            touch-action: none;
+        }
+
+        .btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #3b9c95;
+            transition: transform 0.1s, box-shadow 0.1s;
+            margin: 15px 0;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #3b9c95;
+        }
+
+        .btn-danger {
+            background: var(--primary);
+            box-shadow: 0 5px 0 #c75353;
+        }
+        .btn-danger:active { box-shadow: 0 1px 0 #c75353; }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 0 #c75353;
+            margin: 0;
+        }
+        .btn-small:active { box-shadow: 0 0px 0 #c75353; }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 85%;
+            padding: 25px;
+            border-radius: 25px;
+            text-align: center;
+            border: 5px solid var(--accent);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        
+        <!-- LOADING SCREEN -->
+        <div id="loading-screen" class="screen">
+            <div class="spinner"></div>
+            <h2>Loading Fun Clock...</h2>
+            <p style="margin-top: 10px; opacity: 0.8;">Syncing True-Motion Gear Ratios</p>
+        </div>
+
+        <!-- START SCREEN -->
+        <div id="start-screen" class="screen hidden">
+            <h1 style="color: var(--primary); font-size: 2.5rem; text-align: center; margin-bottom: 10px;">Clock Master!</h1>
+            <p style="text-align: center; color: #666; margin-bottom: 30px;">Spin the red minute hand!<br>Watch the dark hour hand move together!</p>
+            <button class="btn" onclick="Game.initQuiz()">Play Now!</button>
+        </div>
+
+        <!-- GAMEPLAY SCREEN -->
+        <div id="game-screen" class="screen hidden">
+            <div id="hud">
+                <button class="btn btn-danger btn-small" onclick="Game.showExitModal()">Exit</button>
+                <div class="hud-item">Level: <span id="level-val">1</span>/3</div>
+                <div class="hud-item">Score: <span id="score-val">0</span></div>
+            </div>
+
+            <div id="question-area">
+                <h2>Set the clock to:</h2>
+                <div id="target-time-text">12:00</div>
+                <div id="instruction-tip">Spin the Red Minute Hand</div>
+            </div>
+
+            <div id="clock-container">
+                <canvas id="clock" width="320" height="320"></canvas>
+            </div>
+
+            <button class="btn" onclick="Game.checkAnswer()">Check Answer!</button>
+        </div>
+
+        <!-- EXIT DIALOG -->
+        <div id="exit-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h3>Are you sure you want to quit?</h3>
+                <p style="margin-top: 10px; color: #666;">Your progress will be lost!</p>
+                <div class="modal-buttons">
+                    <button class="btn btn-danger btn-small" onclick="Game.confirmExit(true)">Yes, Quit</button>
+                    <button class="btn btn-small" onclick="Game.confirmExit(false)">Keep Playing</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FEEDBACK DIALOG -->
+        <div id="feedback-modal" class="modal-overlay hidden">
+            <div class="modal-content" id="feedback-content">
+                <h2 id="feedback-title">Awesome!</h2>
+                <p id="feedback-msg" style="margin: 15px 0; font-size: 1.2rem;"></p>
+                <button class="btn" id="feedback-btn" onclick="Game.nextQuestion()">Next Challenge</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        
+    </script>
+    <script src="clock.min.js"></script>
+</body>
+</html>

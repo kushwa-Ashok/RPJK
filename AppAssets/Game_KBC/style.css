@@ -1,0 +1,66 @@
+body, html {
+    margin: 0; padding: 0; width: 100%; height: 100%;
+    background-color: #02021a; color: #ffffff;
+    font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+    display: flex; justify-content: center; align-items: center; overflow: hidden;
+}
+
+#kbc-container {
+    width: 100%; max-width: 500px; height: 100%; max-height: 850px;
+    background: radial-gradient(circle, #0a0b36 0%, #020215 100%);
+    box-shadow: 0 0 30px rgba(0, 230, 255, 0.2);
+    position: relative; display: flex; flex-direction: column; overflow: hidden;
+}
+
+.screen {
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; padding: 25px; box-sizing: border-box;
+}
+
+.hidden { display: none !important; }
+
+.logo {
+    font-size: 80px; text-shadow: 0 0 20px #e1b12c; margin-bottom: 20px;
+}
+
+h1 {
+    color: #e1b12c; text-align: center; font-size: 28px; margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(225, 177, 44, 0.3);
+}
+
+p { text-align: center; color: #a4b0be; line-height: 1.5; }
+
+button {
+    background: linear-gradient(135deg, #1e3799 0%, #0c2461 100%);
+    color: #e1b12c; border: 2px solid #e1b12c; padding: 14px 35px;
+    font-size: 18px; font-weight: bold; border-radius: 30px; cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: 0.2s ease;
+}
+button:disabled { background: #2c2c54; border-color: #706fd3; color: #706fd3; cursor: not-allowed; }
+
+#top-bar {
+    width: 100%; display: flex; justify-content: space-between;
+    font-size: 18px; font-weight: bold; color: #e1b12c; margin-bottom: 30px;
+}
+
+#question-container {
+    width: 100%; background: rgba(12, 36, 97, 0.6);
+    border: 2px solid #4834d4; border-radius: 40px; padding: 25px;
+    text-align: center; box-sizing: border-box; margin-bottom: 30px;
+    box-shadow: inset 0 0 15px rgba(72, 52, 212, 0.5);
+}
+
+#question-text { font-size: 24px; color: #fff; font-weight: bold; margin: 0; }
+
+#options-grid {
+    width: 100%; display: grid; grid-template-columns: 1fr; gap: 15px;
+}
+
+.option-card {
+    background: rgba(0, 0, 0, 0.4); border: 1.5px solid #00d2d3;
+    border-radius: 25px; padding: 15px 25px; text-align: left;
+    font-size: 18px; cursor: pointer; transition: 0.2s ease;
+    display: flex; align-items: center; color: #fff;
+}
+.option-card:hover { background: rgba(0, 210, 211, 0.2); border-color: #fff; }
+.option-prefix { color: #e1b12c; font-weight: bold; margin-right: 15px; }

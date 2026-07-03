@@ -1,0 +1,275 @@
+/* ==========================================================================
+   BRIGHT, TRANSITIONAL RESETS & RESPONSIVE APP DESKTOP CANVAS
+   ========================================================================== */
+body, html {
+    margin: 0; padding: 0; width: 100%; height: auto; min-height: 100%;
+    background: radial-gradient(circle at 20% 30%, #f0f7ff 0%, #e0f2fe 100%);
+    color: #1e293b;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex; justify-content: center; align-items: center; 
+    overflow-y: auto;
+}
+
+#app-window {
+    width: 100%; height: 100%;
+    background: #ffffff;
+    position: relative; display: flex; flex-direction: column; overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (min-width: 768px) {
+    #app-window {
+        width: 90vw; max-width: 1200px; 
+        height: auto; min-height: 70vh;
+        border-radius: 24px;
+        box-shadow: 0 20px 40px -15px rgba(14, 165, 233, 0.25), 0 0 0 1px rgba(14, 165, 233, 0.1);
+        margin: 40px 0;
+    }
+}
+
+.panel {
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 30px; box-sizing: border-box; 
+    overflow: visible;
+    width: 100%; max-width: 850px; margin: 0 auto;
+}
+
+.hidden { display: none !important; }
+.logo-badge { font-size: 64px; text-align: center; margin-bottom: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+h1 { font-size: 32px; font-weight: 800; color: #0284c7; text-align: center; margin: 20px 0 10px 0; letter-spacing: -0.5px; }
+h2 { font-size: 26px; font-weight: 800; text-align: center; margin-bottom: 8px; color: #0369a1; }
+p.subtitle { text-align: center; color: #64748b; font-size: 15px; margin-top: 0; margin-bottom: 30px; max-width: 500px; line-height: 1.5; }
+
+/* ==========================================================================
+   NEW RESTRUCTURED TOP UTILITY HEADER ROW
+   ========================================================================== */
+.top-utility-bar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.utility-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mini-logo {
+    font-size: 28px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.user-status-pill-clean {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #166534;
+}
+
+.logout-link {
+    color: #b91c1c;
+    cursor: pointer;
+    text-decoration: none;
+    background: #fee2e2;
+    padding: 3px 8px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+.logout-link:hover { background: #fca5a5; }
+
+.hub-leaderboard-trigger-clean {
+    background: #fffbeb;
+    border: 1px solid #f59e0b;
+    color: #b45309;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.hub-leaderboard-trigger-clean:hover { background: #fef3c7; transform: scale(1.03); }
+
+/* ==========================================================================
+   INPUT CONTROLS & SELECTION BAR (RESPONSIVE DROPDOWNS)
+   ========================================================================== */
+#config-selection-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto 24px auto;
+}
+
+.login-form-group { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 460px; margin-bottom: 24px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+label { font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Side-by-Side Flex Layout Mode for Widescreen Desktop viewports */
+@media (min-width: 768px) {
+    #config-selection-container {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+    #config-selection-container .form-group {
+        flex: 1;
+    }
+}
+
+input[type="text"], input[type="password"] {
+    background: #f8fafc; color: #0f172a; border: 2px solid #e2e8f0; padding: 14px 16px;
+    border-radius: 12px; font-size: 16px; outline: none; transition: all 0.2s;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+input[type="text"]:focus, input[type="password"]:focus { border-color: #0ea5e9; background: #ffffff; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15); }
+
+#login-error-msg { color: #e11d48; font-size: 14px; font-weight: 700; text-align: center; margin-bottom: 20px; min-height: 20px; }
+
+select {
+    background: #f8fafc; color: #0f172a; border: 2px solid #e2e8f0; padding: 14px 16px;
+    border-radius: 12px; font-size: 15px; font-weight: 600; outline: none; transition: all 0.2s;
+    cursor: pointer; width: 100%; box-sizing: border-box;
+}
+select:focus { border-color: #0ea5e9; background: #ffffff; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15); }
+select:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; border-color: #e2e8f0; }
+
+/* ==========================================================================
+   BUTTONS & ACTION INTERACTIVITY MATRIX
+   ========================================================================== */
+.mode-toggle-row { display: flex; flex-direction: row; gap: 16px; width: 100%; max-width: 550px; margin-top: 20px; }
+@media (max-width: 550px) { .mode-toggle-row { flex-direction: column; } }
+
+.nav-trigger-btn {
+    flex: 1; width: 100%; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: white; border: none; padding: 16px 24px;
+    font-size: 16px; font-weight: 700; border-radius: 14px; cursor: pointer; transition: all 0.2s; text-align: center;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+}
+.nav-trigger-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(2, 132, 199, 0.35); }
+.nav-trigger-btn:disabled { background: #cbd5e1; color: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
+
+.alt-trigger-btn {
+    flex: 1; width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 16px 24px;
+    font-size: 16px; font-weight: 700; border-radius: 14px; cursor: pointer; transition: all 0.2s; text-align: center;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+}
+.alt-trigger-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(5, 150, 105, 0.35); }
+.alt-trigger-btn:disabled { background: #cbd5e1; color: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
+
+.secondary-btn {
+    width: 100%; max-width: 320px; background: #64748b; color: white; border: none; padding: 14px;
+    font-size: 15px; font-weight: 700; border-radius: 12px; cursor: pointer; transition: all 0.2s; margin-top: 15px;
+}
+.secondary-btn:hover { background: #475569; }
+
+/* ==========================================================================
+   COMPACT DESKTOP MULTI-COLUMN TILES & LEADERBOARD GRID
+   ========================================================================== */
+.tiles-grid { 
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; 
+    width: 100%; max-width: 750px; margin-bottom: 25px; 
+}
+@media (max-width: 600px) { .tiles-grid { grid-template-columns: 1fr; } }
+
+.activity-tile {
+    background: #ffffff; border: 2px solid #e2e8f0; border-radius: 16px; padding: 20px;
+    cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+.activity-tile:hover { border-color: #0ea5e9; background: #f0f9ff; transform: translateY(-2px); }
+.activity-tile-icon { font-size: 36px; }
+.activity-tile-info { display: flex; flex-direction: column; }
+.activity-tile-title { font-weight: 800; font-size: 18px; color: #0369a1; }
+.activity-tile-desc { font-size: 13px; color: #64748b; margin-top: 4px; line-height: 1.4; }
+
+.leaderboard-board {
+    background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 20px;
+    padding: 16px; margin: 20px 0; display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 550px; box-sizing: border-box;
+}
+.leaderboard-row {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #ffffff; padding: 14px 20px; border-radius: 12px; border-left: 5px solid #cbd5e1;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.leaderboard-row.rank-0 { border-left-color: #fbbf24; background: #fffdf5; }
+.leaderboard-row.rank-1 { border-left-color: #94a3b8; background: #fcfcfd; }
+.leaderboard-row.rank-2 { border-left-color: #b45309; background: #fffaf7; }
+.rank-identity { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; color: #334155; }
+.rank-score { font-family: system-ui, sans-serif; font-weight: 800; color: #0284c7; font-size: 18px; }
+
+/* ==========================================================================
+   SANDBOX LAYOUT MODES & MULTI-CHOICE CARD DECKS
+   ========================================================================== */
+#timer-container { width: 100%; max-width: 650px; height: 10px; background: #e2e8f0; border-radius: 5px; margin-bottom: 25px; overflow: hidden; }
+#timer-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #38bdf8, #ef4444); transform-origin: left; transition: transform 0.1s linear; }
+
+.hud { width: 100%; max-width: 650px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+#back-to-hub { background: #ea580c; color: white; border: none; padding: 8px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+#back-to-hub:hover { background: #c2410c; }
+#hud-metrics { font-size: 18px; font-weight: 800; color: #b45309; background: #fef3c7; padding: 6px 14px; border-radius: 10px; }
+
+#concept-pill { font-size: 12px; font-weight: 800; color: #0369a1; background: #e0f2fe; padding: 6px 16px; border-radius: 20px; align-self: center; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+.question-display { font-size: 22px; font-weight: 800; color: #0f172a; line-height: 1.5; text-align: center; margin-bottom: 30px; min-height: 60px; width: 100%; max-width: 650px; }
+
+#activity-hint-box { background: #eff6ff; border-left: 5px solid #3b82f6; padding: 16px; border-radius: 8px; font-size: 15px; color: #1d4ed8; margin-bottom: 25px; line-height: 1.5; width: 100%; max-width: 650px; box-sizing: border-box; font-weight: 500; }
+
+.options-layout { display: grid; gap: 16px; width: 100%; max-width: 650px; }
+@media (max-width: 500px) { .options-layout { grid-template-columns: 1fr; } }
+
+.choice-card { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 16px; padding: 18px; font-size: 16px; font-weight: 700; color: #334155; cursor: pointer; transition: all 0.15s; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); display: flex; justify-content: center; align-items: center; }
+.choice-card:hover { border-color: #0ea5e9; background: #f0f9ff; transform: scale(1.02); }
+.choice-card.correct { background: #10b981 !important; border-color: #059669 !important; color: white !important; font-size: 17px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); }
+.choice-card.wrong { background: #ef4444 !important; border-color: #dc2626 !important; color: white !important; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4); }
+
+/* ==========================================================================
+   DRAG-AND-DROP ACTIVE TARGET HOVER SHELVES
+   ========================================================================== */
+#interactive-target-zone { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; min-height: 64px; padding: 14px; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 16px; margin-bottom: 25px; width: 100%; max-width: 650px; box-sizing: border-box; align-items: center; }
+#interactive-source-shelf { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; width: 100%; max-width: 650px; }
+
+.drop-box-slot { width: 48px; height: 48px; border: 2px dashed #0ea5e9; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-weight: 800; font-size: 20px; text-transform: uppercase; color: #0284c7; background: #ffffff; transition: all 0.2s; }
+.drop-box-slot.filled { border-style: solid; background: #e0f2fe; border-color: #0284c7; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+.drop-box-slot.static-lock { border-style: solid; background: #f1f5f9; color: #64748b; cursor: not-allowed; border-color: #cbd5e1; }
+
+.tile-chip { background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%); color: white; padding: 12px 20px; font-size: 16px; font-weight: 700; border-radius: 12px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 6px rgba(14, 165, 233, 0.15); transition: all 0.15s; }
+.tile-chip:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(14, 165, 233, 0.25); }
+.tile-chip.used { opacity: 0.2; cursor: not-allowed; pointer-events: none; transform: none; box-shadow: none; }
+
+/* ==========================================================================
+   DIAGNOSTICS & SYSTEM CONTEXT MODALS
+   ========================================================================== */
+#report-summary-text { text-align: center; color: #475569; font-size: 16px; font-weight: 600; margin-bottom: 16px; white-space: pre-line; line-height: 1.5; }
+.diagnostic-grid { display: grid;  gap: 16px; width: 100%; max-width: 650px; }
+@media (max-width: 600px) { .diagnostic-grid { grid-template-columns: 1fr; } }
+
+.diag-card { padding: 20px; border-radius: 16px; border: 1px solid transparent; text-align: left; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
+.diag-card h3 { margin: 0 0 12px 0; font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+.diag-card ul { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6; color: #334155; font-weight: 500; }
+
+.card-green { background: #f0fdf4; border-color: #bbf7d0; } .card-green h3 { color: #15803d; }
+.card-red { background: #fff5f5; border-color: #fee2e2; } .card-red h3 { color: #b91c1c; }
+
+.modal-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; box-sizing: border-box; }
+.modal-card { background: #ffffff; border: none; border-radius: 24px; padding: 30px; width: 100%; max-width: 460px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+.modal-card h3 { font-size: 22px; font-weight: 800; margin: 0 0 12px 0; color: #d97706; }
+.modal-card.exit-warning h3 { color: #e11d48; }
+.modal-card p { font-size: 15px; color: #475569; margin: 0 0 24px 0; line-height: 1.6; font-weight: 500; }
+.modal-actions { display: flex; gap: 14px; justify-content: center; }
+.modal-actions button { flex: 1; max-width: 160px; padding: 14px; font-size: 15px; font-weight: 700; border-radius: 12px; border: none; cursor: pointer; transition: 0.2s; }
+.btn-confirm { background: #e11d48; color: white; } .btn-confirm:hover { background: #9f1239; }
+.btn-cancel { background: #64748b; color: white; } .btn-cancel:hover { background: #475569; }
+.btn-close-diag { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: white; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2); }
+.btn-close-diag:hover { box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35); }

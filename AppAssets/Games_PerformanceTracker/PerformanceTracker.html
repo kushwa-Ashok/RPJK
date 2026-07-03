@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NCERT Multi-Class Learning Suite Pro</title>
+    <script src="https://www.youtube.com/game_api/v1"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-window">
+        
+        <!-- LOGIN SCREEN -->
+        <div id="login-screen" class="panel">
+            <div class="logo-badge">🛡️</div>
+            <h1>Studio Portal Login</h1>
+            <p class="subtitle">Log in using username ID or Full Name. Press Enter to submit.</p>
+            
+            <div class="login-form-group">
+                <label>Username / Student ID or Full Name:</label>
+                <input type="text" id="login-username" placeholder="student1">
+                
+                <label>Access Password:</label>
+                <input type="password" id="login-password" placeholder="pass1">
+            </div>
+            
+            <div id="login-error-msg"></div>
+            <button id="auth-submit-btn" class="nav-trigger-btn">Sign In Safely</button>
+        </div>
+
+        <!-- MENU SCREEN -->
+        <div id="menu-screen" class="panel hidden">
+            
+            <!-- NEW TOP UTILITY NAVIGATION HEADER BAR -->
+            <div class="top-utility-bar">
+                <div class="utility-left">
+                    <span class="mini-logo">🚀</span>
+                    <div class="user-status-pill-clean">
+                        <span id="welcome-user-lbl">User: Guest</span>
+                        <span id="auth-logout-trigger" class="logout-link">Log Out</span>
+                    </div>
+                </div>
+                <div class="utility-right">
+                    <button id="hub-leaderboard-btn" class="hub-leaderboard-trigger-clean">🏆 Standings</button>
+                </div>
+            </div>
+            
+            <h1>NCERT Learning Studio</h1>
+            <p class="subtitle">Select your syllabus path below to jump right into your practice questions.</p>
+            
+            <!-- HORIZONTAL / VERTICAL SELECTION CONTAINER -->
+            <div id="config-selection-container">
+                <div class="form-group">
+                    <label>Select Grade Class:</label>
+                    <select id="class-select" disabled>
+                        <option value="">-- Choose Class --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Select Subject:</label>
+                    <select id="subject-select" disabled>
+                        <option value="">-- Choose Subject First --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Select Chapter:</label>
+                    <select id="chapter-select" disabled>
+                        <option value="">-- Choose Chapter First --</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="mode-toggle-row">
+                <button id="launch-assessment-btn" class="nav-trigger-btn" disabled>📝 Launch Assessment Quiz</button>
+                <button id="launch-activity-hub-btn" class="alt-trigger-btn" disabled>🧩 Open Activity Modes</button>
+            </div>
+        </div>
+
+        <!-- ACTIVITY HUB SCREEN -->
+        <div id="activity-hub-screen" class="panel hidden">
+            <h2>Select Activity Style</h2>
+            <p class="subtitle">Pick an interactive puzzle to play</p>
+            
+            <div class="tiles-grid">
+                <div class="activity-tile" data-type="JUMBLE">
+                    <div class="activity-tile-icon">🔀</div>
+                    <div class="activity-tile-info">
+                        <div class="activity-tile-title">Jumble Words</div>
+                        <div class="activity-tile-desc">Unscramble letters using definition context clues.</div>
+                    </div>
+                </div>
+                <div class="activity-tile" data-type="MISSING">
+                    <div class="activity-tile-icon">🔤</div>
+                    <div class="activity-tile-info">
+                        <div class="activity-tile-title">Missing Letters</div>
+                        <div class="activity-tile-desc">Fill in character spaces to finish terms.</div>
+                    </div>
+                </div>
+                <div class="activity-tile" data-type="TRUEFALSE">
+                    <div class="activity-tile-icon">⚖️</div>
+                    <div class="activity-tile-info">
+                        <div class="activity-tile-title">True or False</div>
+                        <div class="activity-tile-desc">Evaluate statements to confirm facts.</div>
+                    </div>
+                </div>
+                <div class="activity-tile" data-type="MULTICHOICE">
+                    <div class="activity-tile-icon">🎯</div>
+                    <div class="activity-tile-info">
+                        <div class="activity-tile-title">Activity Choice</div>
+                        <div class="activity-tile-desc">Classic choice questions mapped by topic.</div>
+                    </div>
+                </div>
+            </div>
+            <button id="back-to-menu-btn" class="secondary-btn">⚙️ Change Syllabus Config</button>
+        </div>
+
+        <!-- SANDBOX SCREEN -->
+        <div id="sandbox-screen" class="panel hidden">
+            <div class="hud">
+                <button id="back-to-hub">🏠 Leave Game</button>
+                <div id="hud-metrics">Points: 0</div>
+            </div>
+
+            <div id="timer-container" class="hidden">
+                <div id="timer-bar"></div>
+            </div>
+
+            <div id="concept-pill">Concept: Loading</div>
+            <div id="gameplay-prompt" class="question-display">Loading challenge...</div>
+            
+            <div id="activity-hint-box" class="hidden"></div>
+            
+            <div id="standard-options-box" class="options-layout hidden"></div>
+
+            <div id="drag-drop-workspace" class="options-layout hidden">
+                <div id="interactive-target-zone"></div>
+                <div id="interactive-source-shelf"></div>
+            </div>
+        </div>
+
+        <!-- LEADERBOARD SCREEN -->
+        <div id="leaderboard-screen" class="panel hidden">
+            <div class="logo-badge">🏆</div>
+            <h2>Global Standings</h2>
+            <div id="report-summary-text">Session Finished! Here are the room metrics.</div>
+
+            <div id="global-leaderboard-render-box" class="leaderboard-board"></div>
+
+            <button id="open-diagnostic-modal-btn" class="alt-trigger-btn hidden" style="margin-bottom: 8px;">📊 View Performance Review</button>
+            <button id="close-leaderboard-btn" class="secondary-btn">Return to Portal</button>
+        </div>
+
+        <!-- SYSTEM MODALS -->
+        <div id="confirmation-modal" class="modal-overlay hidden">
+            <div class="modal-card exit-warning">
+                <h3>Exit Current Session?</h3>
+                <p>Are you sure you want to quit? Your current score milestones and session progress metrics will be cleared.</p>
+                <div class="modal-actions">
+                    <button id="modal-confirm-btn" class="btn-confirm">Yes, Exit</button>
+                    <button id="modal-cancel-btn" class="btn-cancel">Stay</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="diagnostic-modal" class="modal-overlay hidden">
+            <div class="modal-card" style="max-width: 420px;">
+                <h3>📊 Performance Metrics</h3>
+                <p style="margin-bottom:12px;">Concept breakdown from your latest activity run:</p>
+                
+                <div class="diagnostic-grid">
+                    <div class="diag-card card-green">
+                        <h3>🌟 Mastered Strengths</h3>
+                        <ul id="report-strengths-list"></ul>
+                    </div>
+                    <div class="diag-card card-red">
+                        <h3>⚠️ Review Recommendations</h3>
+                        <ul id="report-weaknesses-list"></ul>
+                    </div>
+                </div>
+                <div class="modal-actions" style="margin-top:20px;">
+                    <button id="close-diagnostic-modal-btn" class="btn-close-diag">Got It</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <script src="tracker-script.min.js"></script>
+</body>
+</html>

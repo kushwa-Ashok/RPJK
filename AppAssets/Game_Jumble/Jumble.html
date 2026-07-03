@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Word Jumble Arena</title>    
+    <style>
+        :root {
+            --bg-canvas: #f0f4f9;
+            --sidebar-bg: linear-gradient(135deg, #3730a3 0%, #1e1b4b 100%);
+            --sidebar-text: #ffffff;
+            --card-bg: #ffffff;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --timer-color: #d97706;
+            --timer-bg: #fef3c7;
+            --lives-color: #dc2626;
+            --lives-bg: #fee2e2;
+            --hint-color: #0369a1;
+            --hint-bg: #e0f2fe;
+            --success: #16a34a;
+            --tile-bg: #6366f1;
+            --tile-shadow: #3730a3;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--bg-canvas); color: var(--text-dark);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            display: flex; justify-content: center; align-items: center; overflow: hidden;
+        }
+
+        #jumble-container {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: row; overflow: hidden;
+            background-color: var(--bg-canvas);
+        }
+
+        /* Responsive Split Panel Structural Framework */
+        .sidebar-panel {
+            width: 320px; background: var(--sidebar-bg); color: var(--sidebar-text);
+            display: flex; flex-direction: column; padding: 40px 30px; box-sizing: border-box;
+            justify-content: space-between; border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .main-workspace {
+            flex: 1; display: flex; flex-direction: column; padding: 40px;
+            box-sizing: border-box; background: var(--bg-canvas); overflow-y: auto;
+            justify-content: center; align-items: center;
+        }
+
+        .screen {
+            width: 100%; max-width: 700px; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+        }
+
+        /* Loading View Spinner Configuration */
+        #loading-screen { 
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: #ffffff; z-index: 99; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+        }
+        .spinner {
+            width: 55px; height: 55px;
+            border: 5px solid #e2e8f0; border-top: 5px solid var(--primary);
+            border-radius: 50%; animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .hidden { display: none !important; }
+        
+        .logo { 
+            font-size: 72px; margin-bottom: 15px; 
+            filter: drop-shadow(0 10px 15px rgba(255,255,255,0.2));
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float { 0%,100% {transform:translateY(0);} 50%{transform:translateY(-8px);} }
+
+        h1 { font-size: 34px; margin: 0 0 10px 0; font-weight: 800; letter-spacing: -0.5px; }
+        .sidebar-panel h1 { color: #ffffff; }
+        .main-workspace h1 { color: var(--text-dark); }
+        
+        p { color: var(--text-muted); margin: 0 0 30px 0; font-size: 16px; line-height: 1.5; text-align: center; }
+        .sidebar-panel p { color: #cbd5e1; text-align: left; }
+
+        /* Unified Button Interface Framework */
+        button {
+            background: var(--primary); color: white; border: none; padding: 14px 28px;
+            font-size: 16px; font-weight: 700; border-radius: 14px; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25); transition: all 0.2s ease;
+        }
+        button:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(79, 70, 229, 0.35); }
+        button:active:not(:disabled) { transform: translateY(1px); }
+        button:disabled { background: #cbd5e1; color: #94a3b8; cursor: not-allowed; box-shadow: none; }
+
+        #category-buttons { display: grid; grid-template-columns: repeat(2, 11fr); gap: 16px; width: 100%; max-width: 600px; }
+        .menu-btn {
+            background: var(--card-bg); color: var(--text-dark); border: 2px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); padding: 20px; font-weight: 600; text-align: center; border-radius: 16px;
+        }
+        .menu-btn:hover:not(:disabled) { border-color: var(--primary); background: #fafafa; color: var(--primary); }
+
+        /* HUD Status Module Layout Elements */
+        .hud-group { width: 100%; display: flex; flex-direction: column; gap: 14px; margin-bottom: 25px; }
+        .hud-chip { 
+            background: rgba(255,255,255,0.08); padding: 12px 16px; border-radius: 12px;
+            font-size: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center;
+        }
+        #back-btn { background: rgba(255,255,255,0.15); font-size: 14px; padding: 10px 18px; box-shadow: none; width: 100%; margin-top: auto; }
+        #back-btn:hover { background: rgba(255,255,255,0.25); }
+
+        /* Dynamic Score Metrics */
+        #mobile-hud { display: none; }
+        #stats-row { width: 100%; display: flex; gap: 15px; margin-bottom: 25px; }
+        .stat-capsule {
+            flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-size: 18px; font-weight: 700; padding: 12px; border-radius: 14px;
+        }
+        #timer-box { color: var(--timer-color); background: var(--timer-bg); }
+        #lives-box { color: var(--lives-color); background: var(--lives-bg); }
+
+        /* Clue Field Box Card styling */
+        #hint-box {
+            font-size: 16px; color: var(--hint-color); background: var(--hint-bg);
+            border: 2px dashed #bae6fd; padding: 18px; border-radius: 16px;
+            margin-bottom: 35px; font-weight: 600; text-align: center; width: 100%; box-sizing: border-box;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        }
+
+        /* Letter Tile Workshop Grids */
+        #jumbled-row, #guess-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; width: 100%; min-height: 58px; margin-bottom: 30px; }
+        #guess-row { border-bottom: 3px dashed #cbd5e1; padding-bottom: 20px; }
+
+        .letter-tile {
+            width: 54px; height: 54px; background: var(--tile-bg); color: white;
+            font-size: 24px; font-weight: 800; display: flex; justify-content: center;
+            align-items: center; border-radius: 14px; box-shadow: 0 5px 0 var(--tile-shadow);
+            cursor: pointer; transition: all 0.1s ease; user-select: none;
+        }
+        .letter-tile:hover:not(.used) { background: #4f46e5; transform: translateY(-2px); box-shadow: 0 7px 0 var(--tile-shadow); }
+        .letter-tile:active:not(.used) { transform: translateY(5px); box-shadow: 0 0 0 var(--tile-shadow); }
+        .letter-tile.used { background: #e2e8f0; box-shadow: 0 2px 0 #cbd5e1; color: #94a3b8; cursor: default; transform: translateY(3px); }
+
+        /* Game Command Interactive Dashboard Footer Buttons */
+        #control-actions { display: flex; gap: 16px; width: 100%; max-width: 450px; margin-top: 10px; }
+        #clear-btn { background: #fee2e2; color: var(--lives-color); box-shadow: none; border: 1px solid #fca5a5; flex: 1; }
+        #clear-btn:hover { background: var(--lives-color); color: white; }
+        #submit-btn { background: var(--success); flex: 1.5; box-shadow: 0 4px 10px rgba(22,163,74,0.25); }
+        #submit-btn:hover { background: #15803d; box-shadow: 0 6px 15px rgba(22,163,74,0.35); }
+
+        #final-stats { white-space: pre-line; line-height: 1.6; text-align: center; font-size: 18px; margin-bottom: 25px; }
+
+        /* Dialog Interstitial Alert Modals */
+        .modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.4); display: flex; justify-content: center;
+            align-items: center; z-index: 100; backdrop-filter: blur(4px);
+        }
+        .modal-box {
+            background: #ffffff; border-radius: 24px; padding: 35px; width: 85%; max-width: 380px; text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .modal-box h3 { margin-top: 0; font-size: 24px; color: var(--text-dark); font-weight: 800; }
+        .modal-box p { color: var(--text-muted); margin-bottom: 25px; }
+        .modal-buttons { display: flex; gap: 12px; justify-content: center; }
+        .modal-buttons button { flex: 1; }
+        .modal-btn-confirm { background: var(--success); }
+        .modal-btn-confirm:hover { background: #15803d; }
+        .modal-btn-cancel { background: #e2e8f0; color: var(--text-dark); box-shadow: none; }
+        .modal-btn-cancel:hover { background: #cbd5e1; }
+
+        /* Responsive Breakpoint Matrix Engine */
+        @media (max-width: 768px) {
+            #jumble-container { flex-direction: column; }
+            .sidebar-panel { width: 100%; height: auto; padding: 20px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+            .sidebar-panel p, .sidebar-panel #back-btn { display: none !important; }
+            .sidebar-panel h1 { font-size: 24px; text-align: center; margin-bottom: 0; width: 100%; }
+            .main-workspace { padding: 20px; }
+            #category-buttons { grid-template-columns: 1fr; gap: 10px; width: 100%; }
+            .menu-btn { padding: 14px; }
+            
+            /* Game screen layout shifts for handheld devices */
+            #game-sidebar-hud { display: none !important; }
+            #mobile-hud { 
+                display: flex; width: 100%; justify-content: space-between; align-items: center;
+                margin-bottom: 15px; background: #ffffff; padding: 12px 16px; border-radius: 14px;
+                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); box-sizing: border-box;
+            }
+            #mobile-hud button { padding: 6px 12px; font-size: 13px; background: #e2e8f0; color: var(--text-dark); box-shadow: none; }
+            .mobile-hud-stats { display: flex; gap: 12px; font-weight: 700; font-size: 14px; }
+            .letter-tile { width: 44px; height: 44px; font-size: 18px; border-radius: 10px; box-shadow: 0 4px 0 var(--tile-shadow); }
+        }
+    </style>
+</head>
+<body>
+    <div id="jumble-container">
+        <!-- Persistent Sidebar Dashboard Interface Container -->
+        <div id="left-sidebar" class="sidebar-panel">
+            <div>
+                <!-- <div class="logo" id="sidebar-logo">🔤</div> -->
+                <h1 id="sidebar-title">Word Jumble</h1>
+                <p id="sidebar-desc">Unscramble the letters to find the hidden word!</p>
+            </div>
+            
+            <!-- Contextual Game Status Metrics Component -->
+            <div id="game-sidebar-hud" class="hud-group hidden">
+                <div class="hud-chip"><span>Level:</span><span id="side-level">1</span></div>
+                <div class="hud-chip"><span>Score:</span><span id="side-score">0</span></div>
+            </div>
+            
+            <button id="back-btn" class="hidden">⬅️ Back to Menu</button>
+        </div>
+
+        <!-- Main Interactive Application Viewport Area -->
+        <div class="main-workspace">
+            <div id="loading-screen">
+                <div class="spinner"></div>
+                <h2 style="font-weight: 800; color: var(--text-dark);">Loading Arena...</h2>
+            </div>
+
+            <!-- Category Selector Screen Grid View Component -->
+            <div id="menu-screen" class="screen hidden">
+                <h2 style="font-weight: 800; margin-top: 0; margin-bottom: 25px; font-size: 24px;">Select a Challenge Category</h2>
+                <div id="category-buttons">
+                    <button class="menu-btn" data-cat="numbers" disabled>Numbers & Units</button>
+                    <button class="menu-btn" data-cat="days_months" disabled>Days & Months</button>
+                    <button class="menu-btn" data-cat="fruits" disabled>Indian Fruits</button>
+                    <button class="menu-btn" data-cat="colors" disabled>Colors</button>
+                    <button class="menu-btn" data-cat="shapes" disabled>Shapes</button>
+                    <button class="menu-btn" data-cat="vehicles" disabled>Vehicles</button>
+                </div>
+            </div>
+
+            <!-- Active Match Gameplay Canvas Component -->
+            <div id="game-screen" class="screen hidden">
+                <!-- Collapsed Handheld Navigation Toolbar View -->
+                <div id="mobile-hud">
+                    <button id="mobile-back-btn">⬅️ Menu</button>
+                    <div class="mobile-hud-stats">
+                        <div id="mobile-level-display">Lv: 1</div>
+                        <div id="mobile-score-display">Score: 0</div>
+                    </div>
+                </div>
+
+                <div id="stats-row">
+                    <div id="timer-box" class="stat-capsule">⏱️ <span id="timer-count">45</span>s</div>
+                    <div id="lives-box" class="stat-capsule">❤️ <span id="lives-count">3</span></div>
+                </div>
+                
+                <div id="hint-box">Category: <span id="category-name">None</span></div>
+                
+                <div id="jumbled-row"></div>
+                <div id="guess-row"></div>
+
+                <div id="control-actions">
+                    <button id="clear-btn">Clear 🔄</button>
+                    <button id="submit-btn">Submit 📥</button>
+                </div>
+            </div>
+
+            <!-- End Game Metrics Results Canvas Section -->
+            <div id="win-screen" class="screen hidden">
+                <h2 id="win-title" style="font-size: 36px; font-weight: 800; margin-bottom: 10px;">🎉 Amazing Job!</h2>
+                <p id="final-stats">You unscrambled all words in this set.</p>
+                <button id="restart-btn" style="min-width: 200px;">Play Again!</button>
+            </div>
+        </div>
+
+        <!-- Custom Confirmation / Interstitial Overlay Modal -->
+        <div id="custom-modal" class="modal-overlay hidden">
+            <div class="modal-box">
+                <h3 id="modal-title">Notice</h3>
+                <p id="modal-message">Message text goes here.</p>
+                <div class="modal-buttons" id="modal-actions-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="Jumble.min.js"></script>
+</body>
+</html>

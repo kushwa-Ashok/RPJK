@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Junior GK Explorer</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- MANDATORY: YouTube Playables SDK Loaded First -->
+    <script src="https://www.youtube.com/game_api/v1"></script>
+</head>
+<body>
+    <div id="app-viewport">
+        <!-- SCREEN 1: Category Hub -->
+        <div id="hub-screen" class="panel">
+            <div class="mascot-badge">🚀</div>
+            <h1>Junior Explorer Quiz</h1>
+            <p class="subtitle">Pick a fun category to start your adventure!</p>
+            
+            <div id="hub-grid">
+                <button class="hub-card" data-cat="vehicles" disabled>
+                    <span class="card-icon">🚗</span>
+                    <span class="card-title">Vehicles</span>
+                </button>
+                <button class="hub-card" data-cat="fruits" disabled>
+                    <span class="card-icon">🍎</span>
+                    <span class="card-title">Fruits</span>
+                </button>
+                <button class="hub-card" data-cat="days" disabled>
+                    <span class="card-icon">☀️</span>
+                    <span class="card-title">Days & Seasons</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: Quiz Arena -->
+        <div id="quiz-screen" class="panel hidden">
+            <div id="stat-hud">
+                <button id="home-btn">🏠 Main</button>
+                <div id="hud-score">Stars: ⭐ 0</div>
+            </div>
+
+            <!-- Dynamic Visual Timer Meter -->
+            <div id="timer-lane"><div id="timer-bar"></div></div>
+
+            <div id="question-box">Loading question...</div>
+            
+            <div id="options-stack">
+                <!-- Answer buttons will be generated here dynamically -->
+            </div>
+        </div>
+
+        <!-- SCREEN 3: Celebration End -->
+        <div id="celebration-screen" class="panel hidden">
+            <div class="mascot-badge">🏆</div>
+            <h2>Fantastic Job, Explorer!</h2>
+            <p id="total-stars-msg">You collected 0 stars on this run!</p>
+            <button id="loop-btn">Play Another Topic</button>
+        </div>
+    </div>
+    <script src="MultiChoice.min.js"></script>
+</body>
+</html>

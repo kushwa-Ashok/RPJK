@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Activities</title>
+    <style>
+        /* Modern CSS Variables for Easy Customization */
+        :root {
+            --primary-bg: linear-gradient(135deg, #1e1b4b 0%, #311042 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-dark: #1e293b;
+            --accent-blue: #2563eb;
+            --accent-hover: #ff4500;
+        }
+
+        /* Base Setup */
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+            background: var(--primary-bg);
+            color: #ffffff;
+            box-sizing: border-box;
+        }
+
+        /* Typography & Headings */
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        /* Animated Tagline */
+        .gradient-effect {
+            /* font-size: 22px; */
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-top: 0;
+            /* margin-bottom: 50px; */
+            background: linear-gradient(to right, #38bdf8, #818cf8, #34d399, #38bdf8);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientScroll 3s linear infinite;
+        }
+
+        /* Layout Grid - Highly Responsive */
+        #container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        /* Modernized Cards (Tiles) */
+        .tile {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 24px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            cursor: pointer;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 
+                        0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+                        box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Interactive Hover State */
+        .tile:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 
+                        0 0 15px rgba(56, 189, 248, 0.2);
+        }
+
+        .tile h2 {
+            margin: 10px 0 0 0;
+            font-size: 22px;
+            color: var(--text-dark);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* Action Buttons */
+        .tile button {
+            width: 80%;
+            padding: 10px 20px;
+            font-size: 15px;
+            border: none;
+            border-radius: 12px;
+            background: var(--accent-blue);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .tile button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 69, 0, 0.3);
+        }
+        
+        .tile button:active {
+            transform: translateY(0);
+        }
+
+        /* Smooth Keyframe Animation */
+        @keyframes gradientScroll {
+            0% { background-position: 0% center; }
+            100% { background-position: -200% center; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="gradient-effect">RPJK EduTech</h1>
+    <h3 id="tagline" class="gradient-effect">Learn While You Play</h3>
+    
+    <div id="container">
+        <!-- The script.min.js file will inject cards seamlessly here. -->        
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

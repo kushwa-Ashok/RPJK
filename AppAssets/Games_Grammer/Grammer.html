@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multilingual Learning Portal</title>
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --purple: #9B59B6;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --text-dark: #2C3E50;
+            --sidebar-bg: rgba(255, 255, 255, 0.95);
+            --sidebar-width-expanded: 260px;
+            --sidebar-width-collapsed: 80px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            color: var(--text-dark);
+            overflow: hidden;
+        }
+
+        /* --- Desktop Collapsible Left Sidebar --- */
+        .sidebar {
+            width: var(--sidebar-width-expanded);
+            background: var(--sidebar-bg);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 15px;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255, 255, 255, 0.6);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-width-collapsed);
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding: 0 10px;
+        }
+
+        .brand-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar.collapsed .brand-title {
+            opacity: 0;
+            pointer-events: none;
+            width: 0;
+        }
+
+        .toggle-btn {
+            background: #EAECEE;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: transform 0.3s;
+        }
+        .toggle-btn:hover { background: #D5D8DC; }
+        
+        .sidebar.collapsed .toggle-btn {
+            transform: rotate(180deg);
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .nav-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            color: #7F8C8D;
+            cursor: pointer;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.2s ease;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .nav-btn span:not(.icon) {
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar.collapsed .nav-btn span:not(.icon) {
+            opacity: 0;
+            pointer-events: none;
+            width: 0;
+        }
+
+        .nav-btn .icon {
+            font-size: 1.3rem;
+            min-width: 25px;
+            text-align: center;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.03);
+            color: var(--text-dark);
+        }
+
+        /* Active Color Routings */
+        .nav-btn.active[data-tab="game"] {
+            color: white;
+            background: var(--primary);
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        .nav-btn.active[data-tab="sandbox"] {
+            color: white;
+            background: var(--purple);
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+
+        /* --- Dynamic Stage Workspace Area --- */
+        .stage-container {
+            flex: 1;
+            height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+        }
+
+        iframe {
+            width: 100%;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            background: white;
+        }
+
+        /* --- CRITICAL FIX: Responsive Mobile Bottom Bar Viewport --- */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column; /* Stacks display workspace vertically */
+            }
+
+            /* Completely hide desktop left sidebar container */
+            .sidebar {
+                display: none;
+            }
+
+            /* Create Sticky UI Mobile Bottom Dock */
+            .nav-menu {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 65px;
+                background: white;
+                flex-direction: row; /* Horizontal Alignment */
+                gap: 0;
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+                border-top: 1px solid #EAECEE;
+                z-index: 999;
+                padding: 5px 10px;
+            }
+
+            .nav-btn {
+                flex: 1;
+                flex-direction: column; /* Stack Emoji Icon on top of label text */
+                justify-content: center;
+                align-items: center;
+                gap: 3px;
+                padding: 5px;
+                border-radius: 10px;
+                text-align: center;
+            }
+
+            .nav-btn span:not(.icon) {
+                font-size: 0.75rem; /* Compact layout readability */
+                opacity: 1 !important;
+                width: auto !important;
+            }
+
+            .nav-btn .icon {
+                font-size: 1.2rem;
+            }
+
+            /* Style Active buttons cleanly for Mobile Dock constraints */
+            .nav-btn.active[data-tab="game"], 
+            .nav-btn.active[data-tab="sandbox"] {
+                color: white;
+                box-shadow: none; /* Strip drop shadows to stay flat on mobile */
+            }
+
+            .stage-container {
+                padding: 10px;
+                /* Crucial: Reserve 65px bottom space so content isn't clipped behind dock */
+                height: calc(100vh - 65px); 
+                margin-bottom: 65px;
+            }
+
+            iframe {
+                border-radius: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="brand-title">🗣️ Speak Lab</div>
+            <button class="toggle-btn" onclick="toggleSidebar()">◀</button>
+        </div>
+
+        <div class="nav-menu" id="menu-node">
+            <button class="nav-btn active" data-tab="game" onclick="switchTab(this, 'pronunciation.html')">
+                <span class="icon">🎙️</span>
+                <span>Free Text Studio</span>
+                
+            </button>
+            <button class="nav-btn" data-tab="sandbox" onclick="switchTab(this, 'Plurals.html')">
+                <span class="icon">🎮</span>
+                <span>Game Play Zone</span>
+            </button>            
+        </div>
+    </div>
+
+    <div class="stage-container">
+        <iframe id="stage-frame" src="pronunciation.html" title="Active Frame Context"></iframe>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+
+        // Handles dynamic node cloning for structural layout swaps across viewports
+        function handleMobileViewManoeuvre() {
+            const menuNode = document.getElementById('menu-node');
+            if (window.innerWidth <= 768) {
+                // Relocate navigation tree to root body level so it stays un-docked from the sidebar container
+                if (menuNode.parentElement.id === 'sidebar') {
+                    document.body.appendChild(menuNode);
+                }
+            } else {
+                // Re-dock back to desktop side panel container structure cleanly
+                const sidebar = document.getElementById('sidebar');
+                if (menuNode.parentElement.tagName === 'BODY') {
+                    sidebar.appendChild(menuNode);
+                }
+            }
+        }
+
+        function switchTab(buttonElement, targetFile) {
+            if (buttonElement.classList.contains('active')) return;
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Find all matching target button references across the DOM lifecycle and light them up
+            const targetTabName = buttonElement.getAttribute('data-tab');
+            document.querySelectorAll(`.nav-btn[data-tab="${targetTabName}"]`).forEach(btn => {
+                btn.classList.add('active');
+            });
+
+            const frame = document.getElementById('stage-frame');
+            frame.style.opacity = '0';
+            
+            setTimeout(() => {
+                frame.src = targetFile;
+                frame.style.opacity = '1';
+            }, 150);
+        }
+
+        // Listeners keeping viewport transitions bug-free
+        window.addEventListener('resize', handleMobileViewManoeuvre);
+        window.addEventListener('DOMContentLoaded', handleMobileViewManoeuvre);
+    </script>    
+</body>
+</html>

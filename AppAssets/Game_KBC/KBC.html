@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Math Crorepati Challenge</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- MANDATORY: YouTube Playables SDK Loaded First -->
+    <script src="https://www.youtube.com/game_api/v1"></script>
+</head>
+<body>
+    <div id="kbc-container">
+        <!-- SCREEN 1: Welcome/Intro -->
+        <div id="intro-screen" class="screen">
+            <div class="logo">🧮</div>
+            <h1>Kaun Banega Math Crorepati?</h1>
+            <p>Answer 15 progressive math questions correctly to win the ultimate ₹5 Crore prize!</p>
+            <button id="start-btn" disabled>Loading Studio...</button>
+        </div>
+
+        <!-- SCREEN 2: Main Game Area -->
+        <div id="game-screen" class="screen hidden">
+            <div id="top-bar">
+                <div id="prize-money">Current Value: ₹0</div>
+                <div id="clock">Time: 30s</div>
+            </div>
+            
+            <div id="question-container">
+                <p id="question-text">Loading calculation...</p>
+            </div>
+
+            <div id="options-grid">
+                <!-- Dynamically generated option blocks -->
+            </div>
+        </div>
+
+        <!-- SCREEN 3: Summary/Results -->
+        <div id="summary-screen" class="screen hidden">
+            <h2 id="summary-title">Game Over!</h2>
+            <p id="summary-payout">You walk away with: ₹0</p>
+            <button id="restart-btn">Try Again</button>
+        </div>
+    </div>
+    <script src="KBC.min.js"></script>
+</body>
+</html>
